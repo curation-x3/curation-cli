@@ -79,7 +79,7 @@ export async function maybeAutoUpdate(currentVersion) {
         const logPath = join(cacheDir(), "update.log");
         const { openSync, closeSync } = await import("node:fs");
         const logFd = openSync(logPath, "w");
-        const child = spawn("npm", ["install", "-g", `github:aiyah-meloken/curation-cli#${latestTag}`], {
+        const child = spawn("npm", ["install", "-g", "--install-links", `github:aiyah-meloken/curation-cli#${latestTag}`], {
             detached: true,
             stdio: ["ignore", logFd, logFd],
         });

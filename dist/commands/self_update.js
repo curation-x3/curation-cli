@@ -67,7 +67,7 @@ export async function selfUpdateCommand() {
         console.log("◇  正在升级…");
     }
     try {
-        execSync(`npm install -g github:aiyah-meloken/curation-cli#${latestTag}`, { stdio: isPretty() ? "inherit" : "pipe", timeout: 120_000 });
+        execSync(`npm install -g --install-links github:aiyah-meloken/curation-cli#${latestTag}`, { stdio: isPretty() ? "inherit" : "pipe", timeout: 120_000 });
         if (isPretty()) {
             const pc = (await import("picocolors")).default;
             console.log(`│  ${pc.green(`升级成功: v${currentVersion} → ${latestTag}`)}`);

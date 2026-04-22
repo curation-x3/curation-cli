@@ -77,7 +77,7 @@ export async function selfUpdateCommand(): Promise<void> {
 
   try {
     execSync(
-      `npm install -g github:aiyah-meloken/curation-cli#${latestTag}`,
+      `npm install -g --install-links github:aiyah-meloken/curation-cli#${latestTag}`,
       { stdio: isPretty() ? "inherit" : "pipe", timeout: 120_000 }
     );
 

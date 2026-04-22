@@ -100,7 +100,7 @@ export async function maybeAutoUpdate(currentVersion: string): Promise<void> {
     const logFd = openSync(logPath, "w");
     const child = spawn(
       "npm",
-      ["install", "-g", `github:aiyah-meloken/curation-cli#${latestTag}`],
+      ["install", "-g", "--install-links", `github:aiyah-meloken/curation-cli#${latestTag}`],
       {
         detached: true,
         stdio: ["ignore", logFd, logFd],

@@ -100,15 +100,12 @@ export async function cardListCommand(opts) {
         const star = item.favorite ? pc.yellow("★") : " ";
         const read = item.read_from_app ? pc.dim("○") : pc.green("●");
         const status = `${star}${read}`;
-        const routing = item.routing === "original_push"
-            ? pc.blue("原文推送")
-            : pc.green("AI梳理");
         table.push([
             status,
             item.title || pc.dim("(无标题)"),
             item.account_name || pc.dim("-"),
             item.publish_date || "-",
-            routing,
+            item.routing || "-",
         ]);
     }
     console.log(table.toString());
