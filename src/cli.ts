@@ -77,6 +77,7 @@ program
   .description("展示登录状态、版本、token 过期时间等")
   .action(async () => {
     try {
+      setPretty(true); // status is always human-readable
       const { statusCommand } = await import("./commands/status.js");
       await statusCommand();
     } catch (err) {
