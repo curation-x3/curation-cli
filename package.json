@@ -7,8 +7,8 @@
     "curation": "./dist/cli.js"
   },
   "scripts": {
-    "build": "tsc",
-    "prepare": "tsc",
+    "build": "npx tsc",
+    "prepare": "npx tsc",
     "test": "node --test dist/tests/",
     "dev": "tsc --watch"
   },
