@@ -4,7 +4,6 @@ interface CardListOptions {
     until?: string;
     page?: number;
     unread?: boolean;
-    unreadByApp?: boolean;
     starred?: boolean;
 }
 export declare function cardListCommand(opts: CardListOptions): Promise<void>;

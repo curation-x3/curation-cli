@@ -1,7 +1,6 @@
 import { apiFetch } from "../http.js";
 import { isPretty, outputJSON } from "../output.js";
 import { usageError } from "../errors.js";
-import { PAGE_SIZE } from "../config.js";
 function getDateRange(range) {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -44,14 +43,7 @@ function getDateRange(range) {
             throw usageError(`Invalid range: "${range}". Valid: today, yesterday, this-week, last-week, earlier`);
     }
 }
-function dateInRange(dateStr, since, until) {
-    if (!dateStr)
-        return false;
-    const d = dateStr.slice(0, 10);
-    return d >= since && d <= until;
-}
 export async function cardListCommand(opts) {
-    // Validate: must have range or since+until
     if (!opts.range && (!opts.since || !opts.until)) {
         throw usageError("Must specify --range or both --since and --until. See: curation help card list");
     }
@@ -69,91 +61,32 @@ export async function cardListCommand(opts) {
         since = opts.since;
         until = opts.until;
     }
-    // Validate date format
     if (!/^\d{4}-\d{2}-\d{2}$/.test(since) || !/^\d{4}-\d{2}-\d{2}$/.test(until)) {
         throw usageError("Dates must be in YYYY-MM-DD format");
     }
     const page = opts.page ?? 1;
     if (page < 1)
         throw usageError("Page must be >= 1");
-    // Fetch inbox (unread_only filter is server-side)
-    const params = new URLSearchParams();
-    if (opts.unreadByApp) {
-        params.set("unread_only", "true");
+    // All filtering + pagination done server-side
+    const params = new URLSearchParams({ since, until, page: String(page) });
+    if (opts.unread)
+        params.set("unread", "true");
+    if (opts.starred)
+        params.set("starred", "true");
+    const resp = await apiFetch(`/cli/cards?${params.toString()}`);
+    if (!resp.ok) {
+        const body = await resp.json().catch(() => ({}));
+        throw new Error(body.detail || `HTTP ${resp.status}`);
     }
-    const resp = await apiFetch(`/inbox?${params.toString()}`);
-    const data = (await resp.json());
-    let items = data.items.filter((i) => i.card_id != null); // Skip analyzing
-    // Filter by date range
-    items = items.filter((i) => dateInRange(i.article_date, since, until));
-    // Filter unread by app
-    if (opts.unreadByApp) {
-        items = items.filter((i) => !i.read_at);
-    }
-    // Filter unread (by agent — not tracked yet, use app read_at as proxy)
-    if (opts.unread) {
-        items = items.filter((i) => !i.read_at);
-    }
-    // Filter starred
-    let favoriteIds = null;
-    if (opts.starred) {
-        const favResp = await apiFetch("/favorites");
-        const favData = (await favResp.json());
-        favoriteIds = new Set(favData.items
-            .filter((f) => f.item_type === "card")
-            .map((f) => f.item_id));
-        items = items.filter((i) => i.card_id && favoriteIds.has(i.card_id));
-    }
-    // Pagination
-    const totalCount = items.length;
-    const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
-    if (page > totalPages && totalCount > 0) {
-        throw usageError(`Page ${page} exceeds total pages (${totalPages})`);
-    }
-    const startIdx = (page - 1) * PAGE_SIZE;
-    const pageItems = items.slice(startIdx, startIdx + PAGE_SIZE);
-    // Fetch favorites if not already done (for the starred column)
-    if (!favoriteIds) {
-        try {
-            const favResp = await apiFetch("/favorites");
-            const favData = (await favResp.json());
-            favoriteIds = new Set(favData.items
-                .filter((f) => f.item_type === "card")
-                .map((f) => f.item_id));
-        }
-        catch {
-            favoriteIds = new Set();
-        }
-    }
-    // Build output
-    const outputItems = pageItems.map((item) => ({
-        card_id: item.card_id,
-        title: item.title,
-        summary: item.description,
-        tags: [],
-        routing: item.routing || "ai_curation",
-        account_name: item.article_meta?.account || "",
-        publish_date: item.article_date,
-        original_title: item.article_meta?.title || "",
-        read_from_app: !!item.read_at,
-        read_by_agent: 0,
-        favorite: item.card_id ? favoriteIds.has(item.card_id) : false,
-    }));
-    const result = {
-        data: outputItems,
-        page,
-        total_pages: totalPages,
-        total_count: totalCount,
-    };
+    const result = (await resp.json());
     if (!isPretty()) {
         outputJSON(result);
         return;
     }
-    // Pretty table output
     const pc = (await import("picocolors")).default;
     const Table = (await import("cli-table3")).default;
-    console.log(`\n${pc.bold("Inbox")} — ${since} ~ ${until}  (${totalCount} 条, 第 ${page}/${totalPages} 页)\n`);
-    if (outputItems.length === 0) {
+    console.log(`\n${pc.bold("Inbox")} — ${since} ~ ${until}  (${result.total_count} 条, 第 ${result.page}/${result.total_pages} 页)\n`);
+    if (result.data.length === 0) {
         console.log(pc.dim("  没有卡片\n"));
         return;
     }
@@ -163,8 +96,7 @@ export async function cardListCommand(opts) {
         wordWrap: true,
         style: { head: [], border: [] },
     });
-    for (const item of outputItems) {
-        // Status icons: ★ = starred, ● = unread, ○ = read
+    for (const item of result.data) {
         const star = item.favorite ? pc.yellow("★") : " ";
         const read = item.read_from_app ? pc.dim("○") : pc.green("●");
         const status = `${star}${read}`;

@@ -13,4 +13,3 @@ export const KEYCHAIN_SERVICE = "com.zhuhuifeng.curation";
 
 export const CONFIG_DIR_NAME = "curation";
 
-export const PAGE_SIZE = 20;

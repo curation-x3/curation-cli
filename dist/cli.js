@@ -85,7 +85,6 @@ card
     .option("--until <date>", "结束日期 YYYY-MM-DD")
     .option("--page <n>", "页码", parseInt)
     .option("--unread", "仅未读（agent）")
-    .option("--unread-by-app", "仅 app 未读")
     .option("--starred", "仅收藏")
     .action(async (opts) => {
     try {
@@ -96,7 +95,6 @@ card
             until: opts.until,
             page: opts.page,
             unread: opts.unread,
-            unreadByApp: opts.unreadByApp,
             starred: opts.starred,
         });
     }

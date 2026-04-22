@@ -7,4 +7,3 @@ export declare const LOOPBACK_PORT = 53682;
 export declare const LOOPBACK_REDIRECT_URI = "http://127.0.0.1:53682/callback";
 export declare const KEYCHAIN_SERVICE = "com.zhuhuifeng.curation";
 export declare const CONFIG_DIR_NAME = "curation";
-export declare const PAGE_SIZE = 20;

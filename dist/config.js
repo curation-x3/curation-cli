@@ -7,5 +7,4 @@ export const LOOPBACK_PORT = 53682;
 export const LOOPBACK_REDIRECT_URI = `http://${LOOPBACK_HOST}:${LOOPBACK_PORT}/callback`;
 export const KEYCHAIN_SERVICE = "com.zhuhuifeng.curation";
 export const CONFIG_DIR_NAME = "curation";
-export const PAGE_SIZE = 20;
 //# sourceMappingURL=config.js.map
