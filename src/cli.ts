@@ -40,25 +40,18 @@ auth
   .description("通过浏览器完成 Authing 登录，token 存 Keychain")
   .action(async () => {
     try {
+      setPretty(true); // login is always interactive
       const { loginFlow } = await import("./auth/login.js");
-      const { isPretty, outputJSON } = await import("./output.js");
       const result = await loginFlow();
 
-      if (isPretty()) {
-        const pc = (await import("picocolors")).default;
-        console.log(`\n┌  ${pc.bold("Curation CLI")}`);
-        console.log("│");
-        console.log(`◇  ${pc.green("认证成功")}`);
-        console.log("│");
-        console.log(
-          `└  已登录为 ${pc.cyan(result.user.username)} <${result.user.email || result.user.user_id}>\n`
-        );
-      } else {
-        outputJSON({
-          status: "ok",
-          user: result.user,
-        });
-      }
+      const pc = (await import("picocolors")).default;
+      console.log(`\n┌  ${pc.bold("Curation CLI")}`);
+      console.log("│");
+      console.log(`◇  ${pc.green("认证成功")}`);
+      console.log("│");
+      console.log(
+        `└  已登录为 ${pc.cyan(result.user.username)} <${result.user.email || result.user.user_id}>\n`
+      );
     } catch (err) {
       outputError(err);
     }
@@ -71,14 +64,8 @@ auth
   .action(async () => {
     try {
       const { logoutFlow } = await import("./auth/logout.js");
-      const { isPretty, outputJSON } = await import("./output.js");
       await logoutFlow();
-
-      if (isPretty()) {
-        console.log("\n┌  已登出\n└  本地 token 已清除\n");
-      } else {
-        outputJSON({ status: "ok", message: "Logged out" });
-      }
+      console.log("\n┌  已登出\n└  本地 token 已清除\n");
     } catch (err) {
       outputError(err);
     }
