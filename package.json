@@ -1,0 +1,38 @@
+{
+  "name": "curation-cli",
+  "version": "0.1.0",
+  "description": "CLI for Curation — read your daily curated cards from the terminal",
+  "type": "module",
+  "bin": {
+    "curation": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "test": "node --test dist/tests/",
+    "dev": "tsc --watch"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiyah-meloken/curation-cli.git"
+  },
+  "author": "aiyah-meloken",
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.9.1",
+    "@napi-rs/keyring": "^1.1.6",
+    "cli-table3": "^0.6.5",
+    "commander": "^13.1.0",
+    "marked": "^15.0.7",
+    "marked-terminal": "^7.3.0",
+    "open": "^10.1.2",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}
