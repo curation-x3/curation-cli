@@ -1,0 +1,10 @@
+export declare const API_BASE = "https://curationcurationcuration.cc";
+export declare const AUTHING_DOMAIN = "https://curation.authing.cn";
+export declare const AUTHING_APP_ID = "69c60580869b64ce6c76bb77";
+export declare const AUTHING_SCOPE = "openid profile email phone offline_access username roles external_id extended_fields address";
+export declare const LOOPBACK_HOST = "127.0.0.1";
+export declare const LOOPBACK_PORT = 53682;
+export declare const LOOPBACK_REDIRECT_URI = "http://127.0.0.1:53682/callback";
+export declare const KEYCHAIN_SERVICE = "com.zhuhuifeng.curation";
+export declare const CONFIG_DIR_NAME = "curation";
+export declare const PAGE_SIZE = 20;

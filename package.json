@@ -8,7 +8,6 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepare": "node ./node_modules/typescript/bin/tsc",
     "test": "node --test dist/tests/",
     "dev": "tsc --watch"
   },
