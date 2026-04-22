@@ -94,44 +94,26 @@ export async function maybeAutoUpdate(currentVersion: string): Promise<void> {
       return;
     }
 
-    // New version available — spawn background install
+    // New version available — spawn fully detached background install
     const logPath = join(cacheDir(), "update.log");
+    const { openSync, closeSync } = await import("node:fs");
+    const logFd = openSync(logPath, "w");
     const child = spawn(
       "npm",
       ["install", "-g", `github:aiyah-meloken/curation-cli#${latestTag}`],
       {
         detached: true,
-        stdio: ["ignore", "pipe", "pipe"],
+        stdio: ["ignore", logFd, logFd],
       }
     );
-
-    // Redirect output to log file
-    const { createWriteStream } = await import("node:fs");
-    const logStream = createWriteStream(logPath, { flags: "w" });
-    child.stdout?.pipe(logStream);
-    child.stderr?.pipe(logStream);
-
     child.unref();
+    closeSync(logFd);
 
     writeUpdateCache({
       checked_at: new Date().toISOString(),
       latest_tag: latestTag,
       status: "installing",
       fail_count: 0,
-    });
-
-    // Track failures
-    child.on("exit", (code) => {
-      if (code !== 0) {
-        const current = readUpdateCache();
-        const failCount = (current?.fail_count ?? 0) + 1;
-        writeUpdateCache({
-          checked_at: new Date().toISOString(),
-          latest_tag: latestTag,
-          status: failCount >= 3 ? "auto_failed" : "installing",
-          fail_count: failCount,
-        });
-      }
     });
   } catch {
     // Silently ignore all errors
