@@ -83,13 +83,6 @@ export async function statusCommand() {
     console.log("│");
     if (user && accessToken) {
         console.log(`◇  已登录为 ${pc.cyan(user.username)}`);
-        console.log(`│   user_id: ${user.user_id} · role: ${user.role} · email: ${user.email || "(未绑定)"}`);
-        console.log("│");
-        if (accessTokenExpiresAt) {
-            const exp = new Date(accessTokenExpiresAt);
-            console.log("◇  Token 状态");
-            console.log(`│   access_token  ${formatTimeRemaining(exp)}`);
-        }
     }
     else {
         console.log(`◇  ${pc.yellow("未登录")}`);
