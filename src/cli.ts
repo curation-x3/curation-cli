@@ -179,10 +179,9 @@ program
   });
 
 // ─── Parse & run ────────────────────────────────────────────
-program.parse();
+// parseAsync() properly awaits async action handlers (login server, etc.)
+await program.parseAsync();
 
 // Background auto-update after main command completes
 // (non-blocking, fire and forget)
-setTimeout(() => {
-  maybeAutoUpdate(version).catch(() => {});
-}, 0);
+maybeAutoUpdate(version).catch(() => {});
