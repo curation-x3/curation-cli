@@ -3,9 +3,9 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getToken } from "../auth/keychain.js";
 import { readUser } from "../auth/user_store.js";
-import { API_BASE } from "../config.js";
 import { isPretty, outputJSON } from "../output.js";
 import { readUpdateCache } from "../auto_update.js";
+import { versionGreater } from "../version_compare.js";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 function getCliVersion() {
     try {
@@ -53,7 +53,7 @@ export async function statusCommand() {
         }
     }
     const latestVersion = updateCache?.latest_tag?.replace(/^v/, "") ?? null;
-    const updateAvailable = latestVersion != null && latestVersion !== cliVersion;
+    const updateAvailable = latestVersion != null && versionGreater(latestVersion, cliVersion);
     const data = {
         cli_version: cliVersion,
         latest_version: latestVersion,
@@ -68,7 +68,6 @@ export async function statusCommand() {
             }
             : null,
         access_token_expires_at: accessTokenExpiresAt,
-        endpoint: API_BASE,
     };
     if (!isPretty()) {
         outputJSON(data);
@@ -89,6 +88,6 @@ export async function statusCommand() {
         console.log("│   跑 `curation auth login` 开始使用");
     }
     console.log("│");
-    console.log(`└  endpoint: ${API_BASE}\n`);
+    console.log("└\n");
 }
 //# sourceMappingURL=status.js.map

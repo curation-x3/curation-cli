@@ -3,9 +3,9 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getToken } from "../auth/keychain.js";
 import { readUser } from "../auth/user_store.js";
-import { API_BASE } from "../config.js";
 import { isPretty, outputJSON } from "../output.js";
 import { readUpdateCache } from "../auto_update.js";
+import { versionGreater } from "../version_compare.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -60,7 +60,7 @@ export async function statusCommand(): Promise<void> {
 
   const latestVersion = updateCache?.latest_tag?.replace(/^v/, "") ?? null;
   const updateAvailable =
-    latestVersion != null && latestVersion !== cliVersion;
+    latestVersion != null && versionGreater(latestVersion, cliVersion);
 
   const data = {
     cli_version: cliVersion,
@@ -76,7 +76,6 @@ export async function statusCommand(): Promise<void> {
         }
       : null,
     access_token_expires_at: accessTokenExpiresAt,
-    endpoint: API_BASE,
   };
 
   if (!isPretty()) {
@@ -102,5 +101,5 @@ export async function statusCommand(): Promise<void> {
   }
 
   console.log("│");
-  console.log(`└  endpoint: ${API_BASE}\n`);
+  console.log("└\n");
 }
