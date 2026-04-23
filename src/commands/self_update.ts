@@ -20,7 +20,7 @@ function getCliVersion(): string {
 async function getLatestTag(): Promise<string | null> {
   try {
     const resp = await fetch(
-      "https://api.github.com/repos/aiyah-meloken/curation-cli/releases/latest",
+      "https://api.github.com/repos/curation-x3/curation-cli/releases/latest",
       { headers: { Accept: "application/vnd.github.v3+json" } }
     );
     if (!resp.ok) return null;
@@ -77,7 +77,7 @@ export async function selfUpdateCommand(): Promise<void> {
 
   try {
     execSync(
-      `npm install -g --install-links github:aiyah-meloken/curation-cli#${latestTag}`,
+      `npm install -g --install-links github:curation-x3/curation-cli#${latestTag}`,
       { stdio: isPretty() ? "inherit" : "pipe", timeout: 120_000 }
     );
 
@@ -97,7 +97,7 @@ export async function selfUpdateCommand(): Promise<void> {
     if (isPretty()) {
       const pc = (await import("picocolors")).default;
       console.log(`│  ${pc.red("升级失败")}: ${msg}`);
-      console.log(`│  手动升级: sudo npm i -g github:aiyah-meloken/curation-cli`);
+      console.log(`│  手动升级: sudo npm i -g github:curation-x3/curation-cli`);
       console.log("└\n");
     } else {
       outputJSON({

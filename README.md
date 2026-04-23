@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-npm i -g github:aiyah-meloken/curation-cli --install-links
+npm i -g github:curation-x3/curation-cli --install-links
 ```
 
 ## 命令

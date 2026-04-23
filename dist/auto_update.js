@@ -50,7 +50,7 @@ export async function maybeAutoUpdate(currentVersion) {
         }
     }
     try {
-        const resp = await fetch("https://api.github.com/repos/aiyah-meloken/curation-cli/releases/latest", {
+        const resp = await fetch("https://api.github.com/repos/curation-x3/curation-cli/releases/latest", {
             headers: { Accept: "application/vnd.github.v3+json" },
             signal: AbortSignal.timeout(10_000),
         });
@@ -79,7 +79,7 @@ export async function maybeAutoUpdate(currentVersion) {
         const logPath = join(cacheDir(), "update.log");
         const { openSync, closeSync } = await import("node:fs");
         const logFd = openSync(logPath, "w");
-        const child = spawn("npm", ["install", "-g", "--install-links", `github:aiyah-meloken/curation-cli#${latestTag}`], {
+        const child = spawn("npm", ["install", "-g", "--install-links", `github:curation-x3/curation-cli#${latestTag}`], {
             detached: true,
             stdio: ["ignore", logFd, logFd],
         });

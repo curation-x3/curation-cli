@@ -64,7 +64,7 @@ export async function maybeAutoUpdate(currentVersion: string): Promise<void> {
 
   try {
     const resp = await fetch(
-      "https://api.github.com/repos/aiyah-meloken/curation-cli/releases/latest",
+      "https://api.github.com/repos/curation-x3/curation-cli/releases/latest",
       {
         headers: { Accept: "application/vnd.github.v3+json" },
         signal: AbortSignal.timeout(10_000),
@@ -100,7 +100,7 @@ export async function maybeAutoUpdate(currentVersion: string): Promise<void> {
     const logFd = openSync(logPath, "w");
     const child = spawn(
       "npm",
-      ["install", "-g", "--install-links", `github:aiyah-meloken/curation-cli#${latestTag}`],
+      ["install", "-g", "--install-links", `github:curation-x3/curation-cli#${latestTag}`],
       {
         detached: true,
         stdio: ["ignore", logFd, logFd],
